@@ -53,9 +53,18 @@ def get_achievement(dist):
     # вывода сообщений о достижении в зависимости
     # от пройденной дистанции.
     # Перенесите этот код сюда и замените print() на return.
-
+    if dist >= 6.5:
+        achievement = 'Отличный результат! Цель достигнута.'
+    elif dist >= 3.9:
+        achievement = 'Неплохо! День был продуктивным.'
+    elif dist >= 2:
+        achievement = 'Маловато, но завтра наверстаем!'
+    else:
+        achievement = 'Лежать тоже полезно. Главное — участие, а не победа!'
+    return(achievement)
 
 # Место для функции show_message.
+def show_message(check_correct_time, get_step_day, dist, get_spent_calories):
 
 
 def accept_package(data):
@@ -70,11 +79,12 @@ def accept_package(data):
     if  # Если функция проверки значения времени вернет False
         return 'Некорректное значение времени'
 
-    day_steps =  # Запишите результат подсчёта пройденных шагов.
-    dist =  # Запишите результат расчёта пройденной дистанции.
-    spent_calories = # Запишите результат расчёта сожжённых калорий.
-    achievement =  # Запишите выбранное мотивирующее сообщение.
+    day_steps = get_step_day(data[1]) # Запишите результат подсчёта пройденных шагов.
+    dist =  get_distance(data[1]) # Запишите результат расчёта пройденной дистанции.
+    spent_calories = get_spent_calories(data[1], data[0]) # Запишите результат расчёта сожжённых калорий.
+    achievement =  get_achievement(get_achievement) # Запишите выбранное мотивирующее сообщение.
     # Вызовите функцию show_message().
+    show_message()
     # Добавьте новый элемент в словарь storage_data.
     # Верните словарь storage_data.
 
