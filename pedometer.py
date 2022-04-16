@@ -16,10 +16,19 @@ def check_correct_data(data):
     # Если длина пакета отлична от 2
     # или один из элементов пакета имеет пустое значение -
     # функция вернет False, иначе - True.
-    if len(data) != 2 or not data[0] or not data[1]:
-        return(False)
-    else:
-        return(True)
+
+    if len(data) !=2:
+        return False
+    if data[0] and data[1]:
+        return True
+    return False
+
+
+
+    # if len(data) != 2 or not data[0] or not data[1]:
+    #     return False
+    # else:
+    #     return True
 
 def check_correct_time(time):
     """Проверка корректности параметра времени."""
@@ -28,10 +37,11 @@ def check_correct_time(time):
     # меньше самого большого ключа в словаре,
     # функция вернет False.
     # Иначе - True 
-    if not storage_data and time < storage_data.keys:
-        return(False)
-    else:
-        return(True)
+    if storage_data:
+        if time < max(storage_data) :
+            return False
+        return True
+    return False
 
 
 def get_step_day(steps):
@@ -42,25 +52,29 @@ def get_step_day(steps):
     step_sum = 0
     for n in storage_data.values:
         step_sum = step_sum + n 
-    return(step_sum+steps)
+    return step_sum+steps
 
 def get_distance(steps):
     """Получить дистанцию пройденного пути в км."""
     # Посчитайте дистанцию в километрах,
     # исходя из количества шагов и длины шага.
     dist = steps*STEP_M
-    return(dist)
+    return dist
 
 
-def get_spent_calories(dist, current_time):
+def get_spent_calories(dist: int, current_time: datetime):
     """Получить значения потраченных калорий."""
     # В уроке «Строки» вы написали формулу расчета калорий.
     # Перенесите её сюда и верните результат расчётов.
     # Для расчётов вам потребуется значение времени; 
     # получите его из объекта current_time;
     # переведите часы и минуты в часы, в значение типа float.
-    velocity = dist/ current_time
-    spent_calories = (K_1*WEIGHT + (velocity**2 / HEIGHT) * K_2*WEIGHT) * minutes
+    # timedelta_last_pack = storage_data.keys()[-1]
+    # timedelta_last_pack = (dt.datetime.strptime(timedelta_last_pack, FORMAT)).time()
+    # dist_time = timedelta(current_time) - timedelta(timedelta_last_pack)
+    # dist_minutes=  dist_time.total_seconds() / 60
+    velocity = dist/ dist_minutes / 60
+    spent_calories = (K_1*WEIGHT + (velocity**2 / HEIGHT) * K_2*WEIGHT) * dist_minutes
     return(spent_calories)
 
 def get_achievement(dist):
@@ -102,22 +116,26 @@ def accept_package(data):
     if  check_correct_data(data) == False: # Если функция проверки пакета вернет False
         return 'Некорректный пакет'
 
+    (current_time, steps) = data
+
     # Распакуйте полученные данные.
-    pack_time =  (dt.datetime.strptime(data[0], FORMAT)).time() # Преобразуйте строку с временем в объект типа time.
+    pack_time =  (dt.datetime.strptime(current_time, FORMAT)).time() # Преобразуйте строку с временем в объект типа time.
+    # current_time = storage_data.keys()[-1] - pack_time
 
     if  check_correct_time(pack_time) == False: # Если функция проверки значения времени вернет False
         return 'Некорректное значение времени'
 
-    day_steps = get_step_day(data[1]) # Запишите результат подсчёта пройденных шагов.
-    dist =  get_distance(data[1]) # Запишите результат расчёта пройденной дистанции.
-    spent_calories = get_spent_calories(data[1], data[0]) # Запишите результат расчёта сожжённых калорий.
+
+
+
+    day_steps = get_step_day(steps) # Запишите результат подсчёта пройденных шагов.
+    dist =  get_distance(steps) # Запишите результат расчёта пройденной дистанции.
+    spent_calories = get_spent_calories(dist, pack_time) # Запишите результат расчёта сожжённых калорий.
     achievement =  get_achievement(dist) # Запишите выбранное мотивирующее сообщение.
     # Вызовите функцию show_message().
     show_message(pack_time, day_steps, dist, spent_calories, achievement) 
     # Добавьте новый элемент в словарь storage_data.
-    storage_data = {
-        data[0] : data[1] for n in data
-    }
+    storage_data[current_time]= steps
     # Верните словарь storage_data.
     return(storage_data)
 
